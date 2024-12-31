@@ -1,0 +1,8 @@
+python-dotenv
+termcolor
+
+requests
+yfinance
+pandas
+plotly
+numpy
