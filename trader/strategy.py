@@ -6,23 +6,21 @@ from abc import ABC, abstractmethod
 
 import pandas as pd
 
+from broker import Broker
+
 from .indicators import Indicator, Signal
 
 
 class Strategy(ABC):
     """
-    A Strategy holds a collection of Indicators and aggregates their signals
-    into a single BUY / SELL / HOLD decision for a given price history.
+    Aggregates one or more signals into a single BUY / SELL / HOLD decision.
 
-    Subclass this and implement `signal()` to define the aggregation logic.
+    Subclass and implement `signal()`.  Override `configure()` to receive
+    broker fee context before the first trade.
     """
 
-    def __init__(self) -> None:
-        super()
-        self.indicators: list[Indicator] = []
-
-    def add_indicator(self, indicator: Indicator) -> None:
-        self.indicators.append(indicator)
+    def configure(self, broker: Broker, symbol: str) -> None:  # noqa: B027
+        """Called by Trader after construction; override to receive fee context."""
 
     @abstractmethod
     def signal(self, df: pd.DataFrame) -> Signal:
@@ -34,10 +32,13 @@ class DefaultStrategy(Strategy):
     """
     Majority-vote strategy: asks every indicator for a signal and returns
     whichever of BUY or SELL has a strict majority.  HOLD wins ties.
-
-    This is the simplest meaningful aggregation — a starting point you can
-    replace with weighted voting, threshold rules, or ML-based logic.
     """
+
+    def __init__(self) -> None:
+        self.indicators: list[Indicator] = []
+
+    def add_indicator(self, indicator: Indicator) -> None:
+        self.indicators.append(indicator)
 
     def signal(self, df: pd.DataFrame) -> Signal:
         signals = [ind.signal(df) for ind in self.indicators]

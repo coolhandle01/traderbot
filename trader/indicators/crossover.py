@@ -1,5 +1,9 @@
 """
-crossover.py
+crossover.py — SMA and EMA crossover indicators
+
+Golden cross / death cross strategy:
+https://www.investopedia.com/terms/g/goldencross.asp
+https://school.stockcharts.com/doku.php?id=technical_indicators:moving_average_crossovers
 """
 
 import pandas as pd
@@ -8,7 +12,16 @@ from .indicator import Indicator, Signal
 
 
 class SMACrossover(Indicator):
-    """Generates BUY when fast SMA crosses above slow SMA, SELL when it crosses below."""
+    """
+    Generates a signal when the fast SMA crosses the slow SMA.
+
+    BUY  (golden cross) — fast crosses above slow: short-term momentum
+         is turning bullish relative to the longer-term trend.
+    SELL (death cross)  — fast crosses below slow: momentum turning bearish.
+    HOLD — no crossover in the last two bars.
+
+    Common pairings: (5, 20), (10, 50), (50, 200).
+    """
 
     def __init__(self, fast: int, slow: int) -> None:
         self.fast = fast
@@ -34,15 +47,22 @@ class SMACrossover(Indicator):
 
 
 class EMACrossover(Indicator):
-    """Generates BUY when fast EMA crosses above slow EMA, SELL when it crosses below."""
+    """
+    Generates a signal when the fast EMA crosses the slow EMA.
 
-    def __init__(
-        self, fast: int, slow: int, overbought: float = 70, oversold: float = 30
-    ) -> None:
+    Identical logic to SMACrossover but uses exponentially weighted averages,
+    which react faster to recent price changes and lag less than a plain SMA.
+
+    BUY  — fast EMA crosses above slow EMA.
+    SELL — fast EMA crosses below slow EMA.
+    HOLD — no crossover in the last two bars.
+
+    Common pairings: (12, 26) — the same periods used inside MACD.
+    """
+
+    def __init__(self, fast: int, slow: int) -> None:
         self.fast = fast
         self.slow = slow
-        self.overbought = overbought
-        self.oversold = oversold
 
     def signal(self, df: pd.DataFrame) -> Signal:
         fast_col = f"EMA{self.fast}"

@@ -1,5 +1,5 @@
 """
-signal.py
+signal.py — trading signal enum
 """
 
 from enum import Enum
@@ -7,18 +7,17 @@ from enum import Enum
 
 class Signal(Enum):
     """
-    Signals are produced by Indicators
+    The three possible outputs from any Indicator or Strategy.
+
+    Values are integers so signals can be summed for majority-vote aggregation
+    (see DefaultStrategy).
     """
 
     SELL = -1
     HOLD = 0
     BUY = 1
 
-    # @staticmethod
-    # def from_str(value: str):
-    #    match value:
-    #        case 'Signal.SELL': return Signal.SELL
-    #        case 'Signal.HOLD': return Signal.HOLD
-    #        case 'Signal.BUY':  return Signal.BUY
-    #        case _:
-    #            raise ValueError(f'{value} is not a valid Signal')
+    # from_str() is not implemented because Signal is only ever produced
+    # programmatically by indicators — it is never parsed from user input
+    # or persisted to disk.  If serialisation is needed later, use
+    # Signal(int(value)) to round-trip via the integer representation.

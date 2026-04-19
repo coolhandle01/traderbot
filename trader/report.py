@@ -1,3 +1,7 @@
+"""
+report.py — Plotly charting for stock analysis
+"""
+
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -7,6 +11,16 @@ from broker import Stock, StockAnalysis
 
 
 class Report:
+    """
+    Generates a multi-panel Plotly chart for a single stock.
+
+    Panels (top to bottom):
+      1. Candlestick OHLC with SMA 5/10/20 and Bollinger Bands overlaid
+      2. Stochastic Oscillation (%K / %D) and RSI
+      3. MACD histogram + signal line
+      4. Performance metrics table (annualised return, volatility, Sharpe, drawdown)
+    """
+
     def __init__(
         self,
         currency: str,
@@ -19,12 +33,11 @@ class Report:
 
     @staticmethod
     def graph_date(strtime: pd.Timestamp) -> str:
+        """Format a Timestamp as YYYY-MM-DD for Plotly range-break lists."""
         return strtime.strftime("%Y-%m-%d")
 
-    #
-    # Candlestick Chart
-    #
     def draw_candlestick_chart(self, fig: go.Figure, df: pd.DataFrame) -> go.Figure:
+        """Add OHLC candlesticks plus SMA and Bollinger Band overlays to row 1."""
         fig.add_trace(
             go.Candlestick(
                 name="OHLC",
@@ -87,10 +100,8 @@ class Report:
 
         return fig
 
-    #
-    # Stochastic Oscillation chart
-    #
     def draw_so_chart(self, fig: go.Figure, df: pd.DataFrame) -> go.Figure:
+        """Add Stochastic Oscillation %K/%D lines and threshold bands to row 2."""
         fig.add_hline(
             y=0, line_width=1, line_dash="dash", line_color="black", col=1, row=2
         )
@@ -134,10 +145,8 @@ class Report:
 
         return fig
 
-    #
-    # RSI chart
-    #
     def draw_rsi_chart(self, fig: go.Figure, df: pd.DataFrame) -> go.Figure:
+        """Add the RSI line to row 2 (shared with Stochastic Oscillation)."""
         rsi_line = {"color": "yellow", "width": 1}
         fig.add_trace(
             go.Scatter(
@@ -148,10 +157,8 @@ class Report:
         )
         return fig
 
-    #
-    # MACD chart
-    #
     def draw_macd_chart(self, fig: go.Figure, df: pd.DataFrame) -> go.Figure:
+        """Add MACD histogram and signal lines to row 3."""
         colors = np.where(df["MACD_H"] < 0, "tomato", "olive")
 
         fig.add_trace(
@@ -184,11 +191,9 @@ class Report:
 
         return fig
 
-    #
-    # Stock Performance Metrics table
-    #
     @staticmethod
     def draw_stock_analysis(fig: go.Figure, analysis: StockAnalysis) -> go.Figure:
+        """Add the performance metrics table to row 4."""
         metrics = ["Annualized Return", "Volatility", "Sharpe Ratio", "Max Drawdown"]
         scores = [
             analysis.annualized_return,
@@ -215,6 +220,12 @@ class Report:
         return fig
 
     def show_graph(self, stock: Stock, html: bool = False) -> go.Figure:
+        """
+        Build and return the full 4-panel chart for `stock`.
+
+        If `html` is True, also writes the chart to `.portfolio/<symbol>/history.html`.
+        Weekend/holiday gaps are removed from the x-axis via Plotly range-breaks.
+        """
         symbol = stock.symbol
         df = stock.history
         print(f"Graphing Analysis for {symbol}")

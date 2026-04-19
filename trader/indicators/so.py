@@ -1,3 +1,8 @@
+"""
+so.py — Stochastic Oscillation indicator
+https://www.alpharithms.com/stochastic-oscillator-in-python-483214/
+"""
+
 import pandas as pd
 
 from .indicator import Indicator, Signal
@@ -5,9 +10,13 @@ from .indicator import Indicator, Signal
 
 class StochasticOscillation(Indicator):
     """
-    calculate stochastic oscillators
-    tested with k_period=14 d_period=3 (days)
-    https://www.alpharithms.com/stochastic-oscillator-in-python-483214/
+    Calculate stochastic oscillators (%K and %D lines).
+
+    %K measures where the current close sits within the recent high/low range.
+    %D is a smoothed signal line (SMA of %K).  A crossover of %K back through
+    %D while both are in overbought/oversold territory triggers the signal.
+
+    Tested with k_period=14, d_period=3 (standard daily settings).
     """
 
     def __init__(

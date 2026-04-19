@@ -29,6 +29,7 @@ class Trader:
         self.trade_min_profit = self.trade_max_bet * 0.1
 
         self.stock_analysis = StockAnalysis(self.stock)
+        self.strategy.configure(self.broker, self.stock.symbol)
 
     def evaluate(self) -> Signal:
         """analyse the history with the given strategy"""
