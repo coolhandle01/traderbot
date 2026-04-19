@@ -25,7 +25,6 @@ class Report:
     # Candlestick Chart
     #
     def draw_candlestick_chart(self, fig: go.Figure, df: pd.DataFrame) -> go.Figure:
-
         fig.add_trace(
             go.Candlestick(
                 name="OHLC",
@@ -43,35 +42,45 @@ class Report:
 
         sma_5_line = {"color": "blueviolet", "width": 1}
         fig.add_trace(
-            go.Scatter(name="SMA 5", x=df.index, y=df["SMA5"], opacity=0.7, line=sma_5_line),
+            go.Scatter(
+                name="SMA 5", x=df.index, y=df["SMA5"], opacity=0.7, line=sma_5_line
+            ),
             col=1,
             row=1,
         )
 
         sma_10_line = {"color": "blue", "width": 1}
         fig.add_trace(
-            go.Scatter(name="SMA 10", x=df.index, y=df["SMA10"], opacity=0.7, line=sma_10_line),
+            go.Scatter(
+                name="SMA 10", x=df.index, y=df["SMA10"], opacity=0.7, line=sma_10_line
+            ),
             col=1,
             row=1,
         )
 
         sma_20_line = {"color": "navy", "width": 1}
         fig.add_trace(
-            go.Scatter(name="SMA 20", x=df.index, y=df["SMA20"], opacity=0.7, line=sma_20_line),
+            go.Scatter(
+                name="SMA 20", x=df.index, y=df["SMA20"], opacity=0.7, line=sma_20_line
+            ),
             col=1,
             row=1,
         )
 
         bb_h_line = {"color": "pink", "width": 1}
         fig.add_trace(
-            go.Scatter(name="BB Upper", x=df.index, y=df["BB_H"], opacity=0.7, line=bb_h_line),
+            go.Scatter(
+                name="BB Upper", x=df.index, y=df["BB_H"], opacity=0.7, line=bb_h_line
+            ),
             col=1,
             row=1,
         )
 
         bb_l_line = {"color": "pink", "width": 1}
         fig.add_trace(
-            go.Scatter(name="BB Lower", x=df.index, y=df["BB_L"], opacity=0.7, line=bb_l_line),
+            go.Scatter(
+                name="BB Lower", x=df.index, y=df["BB_L"], opacity=0.7, line=bb_l_line
+            ),
             col=1,
             row=1,
         )
@@ -82,22 +91,43 @@ class Report:
     # Stochastic Oscillation chart
     #
     def draw_so_chart(self, fig: go.Figure, df: pd.DataFrame) -> go.Figure:
-
-        fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="black", col=1, row=2)
-        fig.add_hline(y=self.oversold, line_width=1, line_dash="dot", line_color="grey", col=1, row=2)
-        fig.add_hline(y=self.overbought, line_width=1, line_dash="dot", line_color="grey", col=1, row=2)
-        fig.add_hline(y=100, line_width=1, line_dash="dash", line_color="black", col=1, row=2)
+        fig.add_hline(
+            y=0, line_width=1, line_dash="dash", line_color="black", col=1, row=2
+        )
+        fig.add_hline(
+            y=self.oversold,
+            line_width=1,
+            line_dash="dot",
+            line_color="grey",
+            col=1,
+            row=2,
+        )
+        fig.add_hline(
+            y=self.overbought,
+            line_width=1,
+            line_dash="dot",
+            line_color="grey",
+            col=1,
+            row=2,
+        )
+        fig.add_hline(
+            y=100, line_width=1, line_dash="dash", line_color="black", col=1, row=2
+        )
 
         fast_line = {"color": "pink", "width": 1}
         fig.add_trace(
-            go.Scatter(name="fast", x=df.index, y=df["SO_K%"], opacity=0.7, line=fast_line),
+            go.Scatter(
+                name="fast", x=df.index, y=df["SO_K%"], opacity=0.7, line=fast_line
+            ),
             col=1,
             row=2,
         )
 
         slow_line = {"color": "cyan", "width": 1}
         fig.add_trace(
-            go.Scatter(name="slow", x=df.index, y=df["SO_D%"], opacity=0.7, line=slow_line),
+            go.Scatter(
+                name="slow", x=df.index, y=df["SO_D%"], opacity=0.7, line=slow_line
+            ),
             col=1,
             row=2,
         )
@@ -110,7 +140,9 @@ class Report:
     def draw_rsi_chart(self, fig: go.Figure, df: pd.DataFrame) -> go.Figure:
         rsi_line = {"color": "yellow", "width": 1}
         fig.add_trace(
-            go.Scatter(name="RSI", x=df.index, y=df["%RSI"], opacity=0.7, line=rsi_line),
+            go.Scatter(
+                name="RSI", x=df.index, y=df["%RSI"], opacity=0.7, line=rsi_line
+            ),
             col=1,
             row=2,
         )
@@ -130,14 +162,22 @@ class Report:
 
         macd_line = {"color": "purple", "width": 1}
         fig.add_trace(
-            go.Scatter(name="MACD", x=df.index, y=df["MACD"], opacity=0.7, line=macd_line),
+            go.Scatter(
+                name="MACD", x=df.index, y=df["MACD"], opacity=0.7, line=macd_line
+            ),
             col=1,
             row=3,
         )
 
         macd_signal_line = {"color": "darkorange", "width": 1}
         fig.add_trace(
-            go.Scatter(name="MACD Signal", x=df.index, y=df["MACD_S"], opacity=0.7, line=macd_signal_line),
+            go.Scatter(
+                name="MACD Signal",
+                x=df.index,
+                y=df["MACD_S"],
+                opacity=0.7,
+                line=macd_signal_line,
+            ),
             col=1,
             row=3,
         )
@@ -157,8 +197,18 @@ class Report:
             analysis.max_drawdown,
         ]
 
-        header = {"values": ["Metric", "Score"], "line_color": "darkslategray", "fill_color": "lightskyblue", "align": "left"}
-        cells = {"values": [metrics, scores], "line_color": "darkslategray", "fill_color": "lightcyan", "align": "left"}
+        header = {
+            "values": ["Metric", "Score"],
+            "line_color": "darkslategray",
+            "fill_color": "lightskyblue",
+            "align": "left",
+        }
+        cells = {
+            "values": [metrics, scores],
+            "line_color": "darkslategray",
+            "fill_color": "lightcyan",
+            "align": "left",
+        }
 
         fig.add_trace(go.Table(header=header, cells=cells), col=1, row=4)
 
@@ -181,7 +231,12 @@ class Report:
             cols=1,
             shared_xaxes=True,
             row_heights=[0.4, 0.2, 0.2, 0.2],
-            subplot_titles=["OHLC", "Stochastic Oscillation / RSI", "MACD", "Performance"],
+            subplot_titles=[
+                "OHLC",
+                "Stochastic Oscillation / RSI",
+                "MACD",
+                "Performance",
+            ],
         )
 
         fig.update_xaxes(rangebreaks=[{"values": dt_breaks}], col=1, row=1)

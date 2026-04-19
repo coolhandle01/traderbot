@@ -17,7 +17,6 @@ from trader.indicators import (
 
 
 async def main() -> None:
-
     load_dotenv()
     locale.setlocale(locale.LC_ALL, "")
 

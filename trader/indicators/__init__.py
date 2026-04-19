@@ -3,9 +3,9 @@ Trader
 """
 
 from .bb import BollingerBands
+from .crossover import EMACrossover, SMACrossover
 from .indicator import Indicator
 from .ma import SimpleMovingAverage
-from .crossover import SMACrossover, EMACrossover
 from .macd import MACD
 from .rsi import ResidualStrengthIndex
 from .signal import Signal

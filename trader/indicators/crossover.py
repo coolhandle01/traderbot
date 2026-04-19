@@ -36,7 +36,9 @@ class SMACrossover(Indicator):
 class EMACrossover(Indicator):
     """Generates BUY when fast EMA crosses above slow EMA, SELL when it crosses below."""
 
-    def __init__(self, fast: int, slow: int, overbought: float = 70, oversold: float = 30) -> None:
+    def __init__(
+        self, fast: int, slow: int, overbought: float = 70, oversold: float = 30
+    ) -> None:
         self.fast = fast
         self.slow = slow
         self.overbought = overbought

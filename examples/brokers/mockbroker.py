@@ -34,7 +34,9 @@ class MockBroker(Broker):
 
     def sell(self, symbol: str, amount: float) -> float:
         capital_received = amount * self.price(symbol)
-        print(f"sold {self.current_position} shares of {symbol} worth ${capital_received}")
+        print(
+            f"sold {self.current_position} shares of {symbol} worth ${capital_received}"
+        )
         self.current_capital += capital_received
         self.current_position = 0.0
         return capital_received

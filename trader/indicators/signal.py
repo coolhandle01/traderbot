@@ -14,8 +14,8 @@ class Signal(Enum):
     HOLD = 0
     BUY = 1
 
-    #@staticmethod
-    #def from_str(value: str):
+    # @staticmethod
+    # def from_str(value: str):
     #    match value:
     #        case 'Signal.SELL': return Signal.SELL
     #        case 'Signal.HOLD': return Signal.HOLD

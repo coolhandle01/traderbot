@@ -41,7 +41,9 @@ class Trader:
 
         self.state = TraderState.BUYING
 
-        tender = self.capital if self.trade_max_bet > self.capital else self.trade_max_bet
+        tender = (
+            self.capital if self.trade_max_bet > self.capital else self.trade_max_bet
+        )
 
         self.position += self.broker.buy(self.stock.symbol, tender)
         self.capital -= tender
