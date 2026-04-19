@@ -3,6 +3,7 @@ import pytest
 
 from trader.indicators import MACD, Signal, SimpleMovingAverage
 from trader.indicators.bb import BollingerBands
+from trader.indicators.crossover import EMACrossover, SMACrossover
 from trader.indicators.rsi import ResidualStrengthIndex
 from trader.indicators.so import StochasticOscillation
 
@@ -122,3 +123,53 @@ class TestStochasticOscillation:
         so.signal(df)
         assert "SO_K%" in df.columns
         assert "SO_D%" in df.columns
+
+
+@pytest.mark.unit
+class TestSMACrossover:
+    def test_buy_on_bullish_crossover(self) -> None:
+        # fast drops below slow, then spikes above → BUY
+        closes = [10.0, 10.0, 10.0, 10.0, 1.0, 1.0, 1.0, 20.0]
+        assert SMACrossover(2, 4).signal(_ohlcv(closes)) == Signal.BUY
+
+    def test_sell_on_bearish_crossover(self) -> None:
+        # fast rises above slow, then drops below → SELL
+        closes = [1.0, 1.0, 1.0, 1.0, 20.0, 20.0, 20.0, 1.0]
+        assert SMACrossover(2, 4).signal(_ohlcv(closes)) == Signal.SELL
+
+    def test_hold_on_flat_prices(self) -> None:
+        closes = [10.0] * 10
+        assert SMACrossover(2, 4).signal(_ohlcv(closes)) == Signal.HOLD
+
+    def test_hold_on_insufficient_data(self) -> None:
+        assert SMACrossover(2, 4).signal(_ohlcv([10.0])) == Signal.HOLD
+
+    def test_adds_sma_columns(self) -> None:
+        df = _ohlcv([10.0] * 10)
+        SMACrossover(2, 4).signal(df)
+        assert "SMA2" in df.columns
+        assert "SMA4" in df.columns
+
+
+@pytest.mark.unit
+class TestEMACrossover:
+    def test_buy_on_bullish_crossover(self) -> None:
+        closes = [10.0, 10.0, 10.0, 10.0, 1.0, 1.0, 1.0, 20.0]
+        assert EMACrossover(2, 4).signal(_ohlcv(closes)) == Signal.BUY
+
+    def test_sell_on_bearish_crossover(self) -> None:
+        closes = [1.0, 1.0, 1.0, 1.0, 20.0, 20.0, 20.0, 1.0]
+        assert EMACrossover(2, 4).signal(_ohlcv(closes)) == Signal.SELL
+
+    def test_hold_on_flat_prices(self) -> None:
+        closes = [10.0] * 10
+        assert EMACrossover(2, 4).signal(_ohlcv(closes)) == Signal.HOLD
+
+    def test_hold_on_insufficient_data(self) -> None:
+        assert EMACrossover(2, 4).signal(_ohlcv([10.0])) == Signal.HOLD
+
+    def test_adds_ema_columns(self) -> None:
+        df = _ohlcv([10.0] * 10)
+        EMACrossover(2, 4).signal(df)
+        assert "EMA2" in df.columns
+        assert "EMA4" in df.columns
