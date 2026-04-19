@@ -66,15 +66,15 @@ class StockAnalysis:
     def __init__(
         self, stock: Stock, column: str = "Close", interval: int = 1, window: int = 252
     ):
-        self.price_history = stock.history.filter([column])
+        self.price_history: pd.Series = stock.history[column]
         self.daily_returns = self._calculate_daily_returns(interval)
         self.annualized_return = self._calculate_annualized_return(window)
         self.volatility = self._calculate_volatility(window)
         self.sharpe_ratio = self._calculate_sharpe_ratio(window)
         self.max_drawdown = self._calculate_max_drawdown()
 
-    def _calculate_daily_returns(self, interval: int) -> pd.DataFrame:
-        return self.price_history.pct_change(interval).dropna()  # type: ignore[no-any-return]
+    def _calculate_daily_returns(self, interval: int) -> pd.Series:
+        return self.price_history.pct_change(interval).dropna()
 
     def _calculate_annualized_return(self, window: int) -> float:
         return float((1 + self.daily_returns.mean()) ** window - 1)
