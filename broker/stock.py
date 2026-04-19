@@ -63,7 +63,9 @@ class Stock:
 
 # https://tradewithpython.com/portfolio-analysis-using-python#heading-5-analysis
 class StockAnalysis:
-    def __init__(self, stock: Stock, column: str = "Close", interval: int = 1, window: int = 252):
+    def __init__(
+        self, stock: Stock, column: str = "Close", interval: int = 1, window: int = 252
+    ):
         self.price_history = stock.history.filter([column])
         self.daily_returns = self._calculate_daily_returns(interval)
         self.annualized_return = self._calculate_annualized_return(window)
@@ -72,7 +74,7 @@ class StockAnalysis:
         self.max_drawdown = self._calculate_max_drawdown()
 
     def _calculate_daily_returns(self, interval: int) -> pd.DataFrame:
-        return self.price_history.pct_change(interval).dropna()
+        return self.price_history.pct_change(interval).dropna()  # type: ignore[no-any-return]
 
     def _calculate_annualized_return(self, window: int) -> float:
         return float((1 + self.daily_returns.mean()) ** window - 1)
@@ -81,7 +83,9 @@ class StockAnalysis:
         return float(self.daily_returns.std() * np.sqrt(window))
 
     def _calculate_sharpe_ratio(self, window: int) -> float:
-        return float(self.daily_returns.mean() / self.daily_returns.std() * np.sqrt(window))
+        return float(
+            self.daily_returns.mean() / self.daily_returns.std() * np.sqrt(window)
+        )
 
     def _calculate_max_drawdown(self) -> float:
         cumulative_returns = (1 + self.daily_returns).cumprod()
@@ -90,7 +94,9 @@ class StockAnalysis:
 
 
 class PortfolioAnalysis:
-    def __init__(self, symbols: list[str] | None = None, interval: int = 1, window: int = 252):
+    def __init__(
+        self, symbols: list[str] | None = None, interval: int = 1, window: int = 252
+    ):
         if symbols is None:
             symbols = ["AAPL"]
         self.symbols = symbols

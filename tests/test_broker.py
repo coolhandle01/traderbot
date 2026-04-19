@@ -6,7 +6,7 @@ from examples.brokers.mockbroker import MockBroker
 @pytest.mark.unit
 class TestMockBroker:
     def test_initial_capital(self) -> None:
-        assert MockBroker().capital("AAPL") == 500.0
+        assert MockBroker().capital() == 500.0
 
     def test_initial_position(self) -> None:
         assert MockBroker().position("AAPL") == 0.0
