@@ -1,5 +1,6 @@
 import pandas as pd
-from indicator import Indicator, Signal
+
+from .indicator import Indicator, Signal
 
 
 class StochasticOscillation(Indicator):

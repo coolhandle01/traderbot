@@ -2,13 +2,18 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from strategy import Strategy
 
 
 class Report:
-    def __init__(self, strat: Strategy, currency: str) -> None:
-        self.strat = strat
+    def __init__(
+        self,
+        currency: str,
+        oversold: float = 30.0,
+        overbought: float = 70.0,
+    ) -> None:
         self.currency = currency
+        self.oversold = oversold
+        self.overbought = overbought
 
     @staticmethod
     def graph_date(strtime: pd.Timestamp) -> str:
@@ -114,7 +119,7 @@ class Report:
             y=0, line_width=1, line_dash="dash", line_color="black", col=1, row=2
         )
         fig.add_hline(
-            y=self.strat.oversold,
+            y=self.oversold,
             line_width=1,
             line_dash="dot",
             line_color="grey",
@@ -122,7 +127,7 @@ class Report:
             row=2,
         )
         fig.add_hline(
-            y=self.strat.overbought,
+            y=self.overbought,
             line_width=1,
             line_dash="dot",
             line_color="grey",

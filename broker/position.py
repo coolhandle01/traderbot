@@ -1,8 +1,7 @@
 import locale
 
-from stock import Stock
-
-from broker import Broker
+from .broker import Broker
+from .stock import Stock
 
 
 class Position:

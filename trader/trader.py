@@ -3,11 +3,12 @@ trader.py
 """
 
 import pandas as pd
-from indicators import Signal
-from state import TraderState
-from strategy import Strategy
 
 from broker import Broker, Stock
+
+from .indicators import Signal
+from .state import TraderState
+from .strategy import Strategy
 
 
 class Trader:
@@ -59,8 +60,6 @@ class Trader:
                 if self.position > 0.0:
                     self.sell()
             case Signal.HOLD:
-                pass
-            case _:
                 pass
         print(
             f"changed position on {self.stock.symbol}: ${self.capital}: {self.position}"

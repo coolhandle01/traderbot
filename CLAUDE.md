@@ -9,6 +9,10 @@ pip install -e ".[dev]"
 ruff check .
 ruff format --check .
 mypy broker trader
+pytest -m unit --cov --cov-report=term-missing
+bandit -c pyproject.toml -r . -q
 ```
 
-All three must pass cleanly. If `ruff format --check` fails, run `ruff format .` to fix formatting, then re-check. Do not push code that would fail CI.
+All checks must pass cleanly. If `ruff format --check` fails, run `ruff format .` to fix it. Do not push code that would fail CI.
+
+> Note: the semgrep SAST step requires `SEMGREP_APP_TOKEN` to be set as a repo secret — it runs in CI only.

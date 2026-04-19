@@ -22,6 +22,10 @@ dev = [
     "mypy",
     "pandas-stubs",
     "types-requests",
+    "pytest",
+    "pytest-cov",
+    "bandit[toml]",
+    "semgrep",
 ]
 
 [tool.ruff]
@@ -49,6 +53,12 @@ known-first-party = ["broker", "trader"]
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[tool.pytest.ini_options]
+markers = ["unit: unit tests (no external I/O)"]
+
+[tool.bandit]
+exclude_dirs = ["tests", "examples", "scripts"]
 
 [tool.mypy]
 python_version = "3.10"

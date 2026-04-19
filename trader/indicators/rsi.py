@@ -5,7 +5,8 @@ rsi.py
 import math
 
 import pandas as pd
-from indicator import Indicator, Signal
+
+from .indicator import Indicator, Signal
 
 
 class ResidualStrengthIndex(Indicator):

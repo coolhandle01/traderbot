@@ -3,7 +3,8 @@ macd.py
 """
 
 import pandas as pd
-from indicator import Indicator, Signal
+
+from .indicator import Indicator, Signal
 
 
 class MACD(Indicator):

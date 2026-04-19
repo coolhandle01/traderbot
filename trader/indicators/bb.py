@@ -5,7 +5,8 @@ https://www.quantifiedstrategies.com/python-bollinger-band-trading-strategy/
 """
 
 import pandas as pd
-from indicator import Indicator, Signal
+
+from .indicator import Indicator, Signal
 
 
 class BollingerBands(Indicator):

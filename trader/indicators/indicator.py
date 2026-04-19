@@ -2,7 +2,6 @@
 indicator.py
 """
 
-import io
 from abc import ABC, abstractmethod
 
 import pandas as pd
@@ -20,21 +19,4 @@ class Indicator(ABC):
 
     @abstractmethod
     def signal(self, df: pd.DataFrame) -> Signal:
-        """
-        The Signal from this Indicator.
-        """
-        pass
-
-    @abstractmethod
-    def load(self, stream: io.BufferedReader) -> None:
-        """
-        Load this Indicator from file.
-        """
-        pass
-
-    @abstractmethod
-    def save(self, stream: io.BufferedWriter) -> None:
-        """
-        Save this Indicator to file.
-        """
         pass
