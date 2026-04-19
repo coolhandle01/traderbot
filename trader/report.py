@@ -142,7 +142,7 @@ class Report:
         fast_line = {"color": "pink", "width": 1}
         fig.add_trace(
             go.Scatter(
-                name="fast", x=df.index, y=df["%K"], opacity=0.7, line=fast_line
+                name="fast", x=df.index, y=df["SO_K%"], opacity=0.7, line=fast_line
             ),
             col=1,
             row=2,
@@ -152,7 +152,7 @@ class Report:
         slow_line = {"color": "cyan", "width": 1}
         fig.add_trace(
             go.Scatter(
-                name="slow", x=df.index, y=df["%D"], opacity=0.7, line=slow_line
+                name="slow", x=df.index, y=df["SO_D%"], opacity=0.7, line=slow_line
             ),
             col=1,
             row=2,

@@ -25,14 +25,14 @@ class StochasticOscillation(Indicator):
         # Adds an "n_low" column with min value of previous k_period periods
         df["n_low"] = df["Low"].rolling(self.window_k).min()
 
-        # %K: position of today's close within the k_period high/low range (0–100)
-        df["%K"] = (df["Close"] - df["n_low"]) * 100 / (df["n_high"] - df["n_low"])
+        # SO_K%: position of today's close within the k_period high/low range (0–100)
+        df["SO_K%"] = (df["Close"] - df["n_low"]) * 100 / (df["n_high"] - df["n_low"])
 
-        # %D: smoothed signal line — SMA of %K over d_period days
-        df["%D"] = df["%K"].rolling(self.window_d).mean()
+        # SO_D%: smoothed signal line — SMA of SO_K% over d_period days
+        df["SO_D%"] = df["SO_K%"].rolling(self.window_d).mean()
 
-        k = df["%K"].iloc[-1]
-        d = df["%D"].iloc[-1]
+        k = df["SO_K%"].iloc[-1]
+        d = df["SO_D%"].iloc[-1]
 
         # Overbought: both lines above threshold and %K has crossed back below %D
         if k > self.overbought and d > self.overbought and k < d:

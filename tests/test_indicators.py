@@ -120,5 +120,5 @@ class TestStochasticOscillation:
         )
         df = _ohlcv(closes, highs=highs, lows=lows)
         so.signal(df)
-        assert "%K" in df.columns
-        assert "%D" in df.columns
+        assert "SO_K%" in df.columns
+        assert "SO_D%" in df.columns
