@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class TraderState(Enum):
     WAITING = 0
     BUYING = 1

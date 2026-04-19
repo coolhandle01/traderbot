@@ -1,11 +1,12 @@
 """
 Trader
 """
-from .trader import Trader
-from .strategy import Strategy
-from .indicators import indicators
 
-__all__ = ['Trader', 'Strategy', 'indicators']
+from .indicators import Indicator
+from .strategy import Strategy
+from .trader import Trader
+
+__all__ = ["Trader", "Strategy", "Indicator"]
 
 
 # What is a Bullish Market?

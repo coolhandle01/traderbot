@@ -1,29 +1,29 @@
 """
 broker.py
 """
+
 from abc import ABC, abstractmethod
+
 
 class Broker(ABC):
     """Broker facilitates trading"""
-    def __init__(self) -> None:
+
+    @abstractmethod
+    def capital(self, symbol: str) -> float:
         pass
 
     @abstractmethod
-    def capital(self, symbol) -> float:
+    def position(self, symbol: str) -> float:
         pass
 
     @abstractmethod
-    def position(self, symbol) -> float:
+    def value(self, symbol: str) -> float:
         pass
 
     @abstractmethod
-    def value(self, symbol) -> float:
+    def buy(self, symbol: str, amount: float) -> float:
         pass
 
     @abstractmethod
-    def buy(self, symbol, amount) -> float:
-        pass
-    
-    @abstractmethod
-    def sell(self, symbol, amount) -> float:
+    def sell(self, symbol: str, amount: float) -> float:
         pass

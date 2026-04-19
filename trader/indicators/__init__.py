@@ -1,15 +1,24 @@
 """
 Trader
 """
-from .signal import Signal
-from .indicator import Indicator
+
 from .bb import BollingerBands
+from .indicator import Indicator
 from .ma import SimpleMovingAverage
 from .macd import MACD
 from .rsi import ResidualStrengthIndex
+from .signal import Signal
 from .so import StochasticOscillation
 
-__all__ = ['Signal', 'Indicator', 'BollingerBands', 'SimpleMovingAverage', 'MACD', 'ResidualStrengthIndex', 'StochasticOscillation']
+__all__ = [
+    "Signal",
+    "Indicator",
+    "BollingerBands",
+    "SimpleMovingAverage",
+    "MACD",
+    "ResidualStrengthIndex",
+    "StochasticOscillation",
+]
 
 
 # What is a Bullish Market?
