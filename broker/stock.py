@@ -33,8 +33,7 @@ class Stock:
         """save a pandas dataframe for the history of this ticker to local file"""
         print(f"downloading history for {self.symbol}")
 
-        if os.path.isdir(self.archive) is False:
-            os.mkdir(self.archive)
+        os.makedirs(os.path.dirname(self.archive), exist_ok=True)
 
         history = yf.download(self.symbol, period="max", interval=self.interval)
         history.to_csv(self.archive)

@@ -47,19 +47,14 @@ class ResidualStrengthIndex(Indicator):
         # Welles Wilder's Smoothing Method
         # TODO: 'Some modern approaches use an alpha value of `2 / period + 1`'
 
-        # Average Gains
-        for i, _row in enumerate(df["avg_gain"].iloc[self.window + 1 :]):
+        # Wilder smoothing: each bar's average = (prev_avg × (window-1) + current) / window
+        for i in range(len(df) - self.window - 1):
             j = i + self.window
             k = i + self.window + 1
-            df["avg_gain"].iloc[k] = (
+            df.loc[df.index[k], "avg_gain"] = (
                 df["avg_gain"].iloc[j] * (self.window - 1) + df["gain"].iloc[k]
             ) / self.window
-
-        # Average Losses
-        for i, _row in enumerate(df["avg_loss"].iloc[self.window + 1 :]):
-            j = i + self.window
-            k = i + self.window + 1
-            df["avg_loss"].iloc[k] = (
+            df.loc[df.index[k], "avg_loss"] = (
                 df["avg_loss"].iloc[j] * (self.window - 1) + df["loss"].iloc[k]
             ) / self.window
 

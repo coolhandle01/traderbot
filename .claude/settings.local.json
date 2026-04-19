@@ -6,7 +6,9 @@
       "Bash(pip install *)",
       "Bash(ruff check *)",
       "Bash(ruff format *)",
-      "Bash(mypy broker *)"
+      "Bash(mypy broker *)",
+      "Bash(pytest -m unit -q)",
+      "Bash(bandit -c pyproject.toml -r . -q)"
     ]
   }
 }

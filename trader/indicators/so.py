@@ -25,29 +25,20 @@ class StochasticOscillation(Indicator):
         # Adds an "n_low" column with min value of previous k_period periods
         df["n_low"] = df["Low"].rolling(self.window_k).min()
 
-        # fast
-        # Uses the min/max values to calculate the %k (as a percentage)
-        df["SO_K%"] = (df["Close"] - df["n_low"]) * 100 / (df["n_high"] - df["n_low"])
+        # %K: position of today's close within the k_period high/low range (0–100)
+        df["%K"] = (df["Close"] - df["n_low"]) * 100 / (df["n_high"] - df["n_low"])
 
-        # slow
-        # Uses the %k to calculates a SMA over the past 3 values of %k
-        df["SO_D%"] = df["%K"].rolling(self.window_d).mean()
+        # %D: smoothed signal line — SMA of %K over d_period days
+        df["%D"] = df["%K"].rolling(self.window_d).mean()
 
-        # this is probably crude:
-        # Overbought status
-        if (
-            df["SO_K%"].iloc[-1] > self.overbought
-            and df["SO_D%"].iloc[-1] > self.overbought
-            and df["SO_K%"].iloc[-1] < df["SO_D%"].iloc[-1]
-        ):
+        k = df["%K"].iloc[-1]
+        d = df["%D"].iloc[-1]
+
+        # Overbought: both lines above threshold and %K has crossed back below %D
+        if k > self.overbought and d > self.overbought and k < d:
             return Signal.SELL
-        # Oversold status
-        elif (
-            df["SO_K%"].iloc[-1] < self.oversold
-            and df["SO_D%"].iloc[-1] < self.oversold
-            and df["SO_K%"].iloc[-1] > df["SO_D%"].iloc[-1]
-        ):
+        # Oversold: both lines below threshold and %K has crossed back above %D
+        if k < self.oversold and d < self.oversold and k > d:
             return Signal.BUY
-        # Something in the middle
-        else:
-            return Signal.HOLD
+
+        return Signal.HOLD

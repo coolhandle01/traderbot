@@ -4,7 +4,7 @@ import random
 
 from broker import Stock
 from examples.brokers.mockbroker import MockBroker
-from trader import Strategy, Trader
+from trader import DefaultStrategy, Trader
 from trader.indicators import (
     MACD,
     BollingerBands,
@@ -15,35 +15,37 @@ from trader.indicators import (
 
 
 def random_strat(
-    overbought_range=(60, 80),
-    oversold_range=(20, 40),
-    rsi_range=(10, 30),
-    macd_range=(5, 15),
-    so_range=(5, 15),
-    bollinger_range=(10, 30),
-) -> Strategy:
-    strat = Strategy()
+    overbought_range: tuple[int, int] = (60, 80),
+    oversold_range: tuple[int, int] = (20, 40),
+    rsi_range: tuple[int, int] = (10, 30),
+    macd_range: tuple[int, int] = (5, 15),
+    so_range: tuple[int, int] = (5, 15),
+    bollinger_range: tuple[int, int] = (10, 30),
+) -> DefaultStrategy:
+    strat = DefaultStrategy()
 
-    strat.add_indicator(indicator=SimpleMovingAverage(window=5))
-    strat.add_indicator(indicator=SimpleMovingAverage(window=10))
-    strat.add_indicator(indicator=SimpleMovingAverage(window=20))
+    strat.add_indicator(SimpleMovingAverage(window=5))
+    strat.add_indicator(SimpleMovingAverage(window=10))
+    strat.add_indicator(SimpleMovingAverage(window=20))
 
     strat.add_indicator(
-        indicator=BollingerBands(
-            window=random.randint(*bollinger_range), num_std=random.uniform(1.5, 3.0)
+        BollingerBands(
+            window=random.randint(*bollinger_range),
+            num_std=random.uniform(1.5, 3.0),
         )
     )
 
     strat.add_indicator(
-        indicator=StochasticOscillation(
+        StochasticOscillation(
             k_period=random.randint(*so_range),
             d_period=random.randint(*so_range),
             overbought=random.randint(*overbought_range),
             oversold=random.randint(*oversold_range),
         )
     )
+
     strat.add_indicator(
-        indicator=ResidualStrengthIndex(
+        ResidualStrengthIndex(
             window=random.randint(*rsi_range),
             overbought=random.randint(*overbought_range),
             oversold=random.randint(*oversold_range),
@@ -52,9 +54,9 @@ def random_strat(
 
     fuzz_macd_k = random.randint(*macd_range)
     fuzz_macd_d = (fuzz_macd_k + 1) * 2
-    fuzz_macd_t = math.fabs(fuzz_macd_k * 0.75)
+    fuzz_macd_t = int(math.ceil(fuzz_macd_k * 0.75))
     strat.add_indicator(
-        indicator=MACD(k_period=fuzz_macd_k, d_period=fuzz_macd_d, t_period=fuzz_macd_t)
+        MACD(k_period=fuzz_macd_k, d_period=fuzz_macd_d, t_period=fuzz_macd_t)
     )
 
     return strat
@@ -63,31 +65,31 @@ def random_strat(
 locale.setlocale(locale.LC_ALL, "")
 
 
-def fuzz_strat(symbol: str, iterations: int) -> Strategy:
-
+def fuzz_strat(symbol: str, iterations: int = 100) -> DefaultStrategy:
     broker = MockBroker()
 
     stock = Stock(symbol, interval="1d")
     stock.load()
 
-    best_strat = Strategy()
-    with open("./baseline.strat") as stream:
-        best_strat.load(stream)
+    # TODO: load a baseline strategy to beat from file once Strategy.load() is implemented
+    best_strat = DefaultStrategy()
+    best_score = 0.0
 
-    for _ in iterations:
+    for _ in range(iterations):
         strat = random_strat()
-
         trader = Trader(stock, broker, strat)
         trader.trade()
 
-        analysis = trader.analysis
-
-        # TODO: test analysis
-        if analysis is not None:
+        # TODO: score the strategy on the back-test result (P&L, Sharpe, etc.)
+        # and replace best_strat when score improves
+        score = trader.capital
+        if score > best_score:
+            best_score = score
             best_strat = strat
 
-    with open("./best.strat", "w") as stream:
-        best_strat.save(stream)
+    # TODO: persist best_strat once Strategy.save() is implemented
+    return best_strat
 
 
-fuzz_strat("AAPL")
+if __name__ == "__main__":
+    fuzz_strat("AAPL")
