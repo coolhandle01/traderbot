@@ -37,7 +37,8 @@ class Trader:
 
     def buy(self) -> None:
         """use capital to buy a position from the broker"""
-        assert self.capital > 0.0
+        if self.capital <= 0.0:
+            raise ValueError("cannot buy: no capital available")
 
         self.state = TraderState.BUYING
 
@@ -52,7 +53,8 @@ class Trader:
 
     def sell(self) -> None:
         """sell the position to the broker for capital"""
-        assert self.position > 0.0
+        if self.position <= 0.0:
+            raise ValueError("cannot sell: no position held")
 
         self.state = TraderState.SELLING
 

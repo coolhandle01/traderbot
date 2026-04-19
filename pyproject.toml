@@ -58,7 +58,7 @@ indent-style = "space"
 markers = ["unit: unit tests (no external I/O)"]
 
 [tool.bandit]
-exclude_dirs = ["tests", "examples", "scripts"]
+exclude_dirs = ["tests", "examples", "scripts", ".venv", ".claude"]
 
 [tool.mypy]
 python_version = "3.10"
