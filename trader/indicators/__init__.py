@@ -5,6 +5,7 @@ Trader
 from .bb import BollingerBands
 from .indicator import Indicator
 from .ma import SimpleMovingAverage
+from .crossover import SMACrossover, EMACrossover
 from .macd import MACD
 from .rsi import ResidualStrengthIndex
 from .signal import Signal
@@ -15,6 +16,8 @@ __all__ = [
     "Indicator",
     "BollingerBands",
     "SimpleMovingAverage",
+    "SMACrossover",
+    "EMACrossover",
     "MACD",
     "ResidualStrengthIndex",
     "StochasticOscillation",
@@ -52,7 +55,7 @@ __all__ = [
 # - Dollar-Cost Averaging: Invest a fixed amount of money at regular intervals, regardless of market conditions. This strategy helps reduce the impact of market volatility.
 
 # Comparing Bullish and Bearish Markets
-# Understanding the differences between bullish and bearish markets is essential for developing effective investment strategies. Here’s a quick comparison:
+# Understanding the differences between bullish and bearish markets is essential for developing effective investment strategies. Here's a quick comparison:
 # - Market Sentiment: Bullish markets are driven by optimism, while bearish markets are driven by pessimism.
 # - Price Movement: Prices rise in bullish markets and fall in bearish markets.
 # - Investor Behavior: Investors tend to buy in bullish markets and sell in bearish markets.

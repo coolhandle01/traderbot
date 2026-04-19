@@ -4,6 +4,7 @@ Stock.py
 
 import os
 
+import numpy as np
 import pandas as pd
 import yfinance as yf
 
@@ -58,3 +59,65 @@ class Stock:
     def tail(self) -> pd.DataFrame:
         """return a copy of the last event of the loaded history"""
         return self.history.tail(1).copy(deep=True)  # type: ignore[no-any-return]
+
+
+# https://tradewithpython.com/portfolio-analysis-using-python#heading-5-analysis
+class StockAnalysis:
+    def __init__(self, stock: Stock, column: str = "Close", interval: int = 1, window: int = 252):
+        self.price_history = stock.history.filter([column])
+        self.daily_returns = self._calculate_daily_returns(interval)
+        self.annualized_return = self._calculate_annualized_return(window)
+        self.volatility = self._calculate_volatility(window)
+        self.sharpe_ratio = self._calculate_sharpe_ratio(window)
+        self.max_drawdown = self._calculate_max_drawdown()
+
+    def _calculate_daily_returns(self, interval: int) -> pd.DataFrame:
+        return self.price_history.pct_change(interval).dropna()
+
+    def _calculate_annualized_return(self, window: int) -> float:
+        return float((1 + self.daily_returns.mean()) ** window - 1)
+
+    def _calculate_volatility(self, window: int) -> float:
+        return float(self.daily_returns.std() * np.sqrt(window))
+
+    def _calculate_sharpe_ratio(self, window: int) -> float:
+        return float(self.daily_returns.mean() / self.daily_returns.std() * np.sqrt(window))
+
+    def _calculate_max_drawdown(self) -> float:
+        cumulative_returns = (1 + self.daily_returns).cumprod()
+        drawdown = (cumulative_returns / cumulative_returns.cummax()) - 1
+        return float(drawdown.min())
+
+
+class PortfolioAnalysis:
+    def __init__(self, symbols: list[str] | None = None, interval: int = 1, window: int = 252):
+        if symbols is None:
+            symbols = ["AAPL"]
+        self.symbols = symbols
+
+        self.price_matrix = pd.DataFrame()
+        for i, symbol in enumerate(self.symbols):
+            stock = Stock(symbol, interval="1d")
+            stock.load()
+
+            price_history = stock.history.filter(["Close"])
+            price_history = price_history.rename(columns={"Close": symbol})
+            if i == 0:
+                self.price_matrix = price_history
+            else:
+                self.price_matrix = self.price_matrix.join(price_history)
+
+        self.correlation = self.price_matrix.corr(method="pearson")
+
+        self.simple_returns = self.price_matrix.pct_change(interval).dropna()
+
+        self.average_simple_returns = self.simple_returns.mean()
+
+        # Annualized Standard Deviation (252 trading days)
+        self.asd = self.simple_returns.std() * np.sqrt(window) * 100
+
+        # return per unit of risk
+        self.perunit = self.average_simple_returns / self.asd
+
+        # cumulative simple return
+        self.dsrc = (self.simple_returns + 1).cumprod()

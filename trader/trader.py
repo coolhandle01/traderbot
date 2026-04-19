@@ -4,7 +4,7 @@ trader.py
 
 import pandas as pd
 
-from broker import Broker, Stock
+from broker import Broker, Stock, StockAnalysis
 
 from .indicators import Signal
 from .state import TraderState
@@ -15,16 +15,20 @@ class Trader:
     """Trade a symbol at a broker"""
 
     def __init__(self, stock: Stock, broker: Broker, strat: Strategy) -> None:
-        self.position = 0.0
-        self.capital = 0.0
-        self.state = TraderState.WAITING
         self.stock = stock
         self.broker = broker
         self.strategy = strat
+        self.state = TraderState.WAITING
         self.analysis = self.stock.copy()
 
         self.position = self.broker.position(self.stock.symbol)
-        self.capital = self.broker.capital(self.stock.symbol)
+        self.capital = self.broker.capital()
+
+        self.initial_capital = self.capital
+        self.trade_max_bet = self.initial_capital * 0.1
+        self.trade_min_profit = self.trade_max_bet * 0.1
+
+        self.stock_analysis = StockAnalysis(self.stock)
 
     def evaluate(self) -> Signal:
         """analyse the history with the given strategy"""
@@ -32,20 +36,32 @@ class Trader:
         return self.strategy.signal(self.analysis)
 
     def buy(self) -> None:
-        """use capital to buy a position from the trader"""
+        """use capital to buy a position from the broker"""
+        assert self.capital > 0.0
+
         self.state = TraderState.BUYING
 
-        self.position = self.broker.buy(self.stock.symbol, self.capital)
-        self.capital = 0
+        tender = self.capital if self.trade_max_bet > self.capital else self.trade_max_bet
+
+        self.position += self.broker.buy(self.stock.symbol, tender)
+        self.capital -= tender
 
         self.state = TraderState.HOLDING
 
     def sell(self) -> None:
         """sell the position to the broker for capital"""
+        assert self.position > 0.0
+
         self.state = TraderState.SELLING
 
-        self.capital = self.broker.sell(self.stock.symbol, self.position)
-        self.position = 0
+        gross = self.position * self.broker.price(self.stock.symbol)
+        tax = self.broker.stamp_duty(self.stock.symbol)
+        fees = self.broker.fees(self.stock.symbol)
+        net = gross - ((gross * tax) + (gross * fees))
+
+        if net > self.trade_min_profit:
+            self.capital += self.broker.sell(self.stock.symbol, self.position)
+            self.position = 0
 
         self.state = TraderState.WAITING
 

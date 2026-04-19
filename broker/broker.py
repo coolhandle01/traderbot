@@ -9,7 +9,11 @@ class Broker(ABC):
     """Broker facilitates trading"""
 
     @abstractmethod
-    def capital(self, symbol: str) -> float:
+    def capital(self) -> float:
+        pass
+
+    @abstractmethod
+    def investments(self) -> float:
         pass
 
     @abstractmethod
@@ -17,7 +21,15 @@ class Broker(ABC):
         pass
 
     @abstractmethod
-    def value(self, symbol: str) -> float:
+    def price(self, symbol: str) -> float:
+        pass
+
+    @abstractmethod
+    def stamp_duty(self, symbol: str) -> float:
+        pass
+
+    @abstractmethod
+    def fees(self, symbol: str) -> float:
         pass
 
     @abstractmethod

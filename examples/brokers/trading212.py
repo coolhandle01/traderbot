@@ -5,9 +5,8 @@ import requests
 from broker import Broker
 
 
-class Trading212(Broker):
-    def __init__(self, apiKey, mode="live"):
-        super()
+class Trading212:
+    def __init__(self, apiKey: str, mode: str = "live"):
         self.headers = {"Authorization": apiKey, "Content-Type": "application/json"}
         self.api_version = 0
         self.page_size = 20
@@ -149,27 +148,39 @@ class Trading212(Broker):
         query = {"cursor": "0", "ticker": "string", "limit": f"{self.page_size}"}
         return self.__api_get(url, query)
 
-    # Concrete Methods
 
-    def capital(self, symbol: str) -> float:
-        self.get_position(symbol)
-        return 0.0
+class Trading212Broker(Trading212, Broker):
+    """Broker implementation backed by the Trading 212 API."""
+
+    def __init__(self, apiKey: str, mode: str = "live"):
+        Trading212.__init__(self, apiKey=apiKey, mode=mode)
+
+    def capital(self) -> float:
+        account = self.get_account()
+        return float(account.get("cash", 0.0)) if account else 0.0
+
+    def investments(self) -> float:
+        account = self.get_account()
+        return float(account.get("invested", 0.0)) if account else 0.0
 
     def position(self, symbol: str) -> float:
-        self.get_position(symbol)
+        pos = self.get_position(symbol)
+        return float(pos.get("quantity", 0.0)) if pos else 0.0
+
+    def price(self, symbol: str) -> float:
+        pos = self.get_position(symbol)
+        return float(pos.get("currentPrice", 0.0)) if pos else 0.0
+
+    def stamp_duty(self, symbol: str) -> float:
         return 0.0
 
-    def value(self, symbol: str) -> float:
-        return 1.0
+    def fees(self, symbol: str) -> float:
+        return 0.0
 
     def buy(self, symbol: str, amount: float) -> float:
-        self.current_capital = 0.0
-        self.current_position = amount
-        print(f"bought {self.current_position} shares of {symbol} worth ${amount}")
-        return self.current_position
+        # TODO: implement via Trading 212 order API
+        return 0.0
 
     def sell(self, symbol: str, amount: float) -> float:
-        print(f"sold {self.current_position} shares of {symbol} worth ${amount}")
-        self.current_capital = amount
-        self.current_position = 0.0
-        return self.current_capital
+        # TODO: implement via Trading 212 order API
+        return 0.0

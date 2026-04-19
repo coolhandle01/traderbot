@@ -9,6 +9,7 @@ from trader import DefaultStrategy, Trader
 from trader.indicators import (
     MACD,
     BollingerBands,
+    EMACrossover,
     ResidualStrengthIndex,
     SimpleMovingAverage,
     StochasticOscillation,
@@ -33,6 +34,7 @@ async def main() -> None:
     strat.add_indicator(SimpleMovingAverage(10))
     strat.add_indicator(SimpleMovingAverage(20))
     strat.add_indicator(BollingerBands(20, 2))
+    strat.add_indicator(EMACrossover(10, 20, overbought=overbought, oversold=oversold))
     strat.add_indicator(
         StochasticOscillation(14, 3, overbought=overbought, oversold=oversold)
     )
