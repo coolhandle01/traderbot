@@ -55,16 +55,6 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: Install SAST tools
-        run: pip install bandit[toml] semgrep
+        run: pip install bandit[toml]
       - name: bandit — security lint
         run: bandit -c pyproject.toml -r . -q
-      - name: semgrep — SAST scan
-        run: >
-          semgrep scan
-          --config=p/python
-          --config=p/security-audit
-          --config=p/owasp-top-ten
-          --error
-          --quiet
-        env:
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}

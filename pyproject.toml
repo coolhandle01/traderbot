@@ -25,7 +25,6 @@ dev = [
     "pytest",
     "pytest-cov",
     "bandit[toml]",
-    "semgrep",
 ]
 
 [tool.ruff]
