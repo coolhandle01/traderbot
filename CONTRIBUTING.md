@@ -56,11 +56,15 @@ unless cleanliness was the task.
 ### Cite the source you implement or diverge from
 
 The indicators already do this - each module docstring links the reference it
-implements (Investopedia, alpharithms, StockCharts). Keep the habit: a new
-indicator, metric, or strategy names the source it is based on with a URL. When
-you deliberately depart from a standard formula or an upstream convention, say so
-in the same place and link what you diverge from, so a future reader can recover
-the reasoning instead of assuming a bug.
+implements (Investopedia, alpharithms, StockCharts). Keep the habit, but prefer
+the primary source over a tutorial blog: a new indicator, metric, or strategy
+names the paper or book it is based on, with the practitioner explainer as a
+clearly-secondary "how to compute it" pointer. `docs/academic-grounding.md` is
+the register of primary sources for the techniques already in the repo (and an
+honest account of what the evidence says about each); add to it when you add a
+technique. When you deliberately depart from a standard formula or an upstream
+convention, say so in the same place and link what you diverge from, so a future
+reader can recover the reasoning instead of assuming a bug.
 
 ### Suppressions carry a reason
 
