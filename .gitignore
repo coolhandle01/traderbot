@@ -206,5 +206,6 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# Claude Code
-.claude/
+# Claude Code personal overrides (committed: .claude/settings.json, hooks, skills)
+.claude/settings.local.json
+.claude/worktrees/
